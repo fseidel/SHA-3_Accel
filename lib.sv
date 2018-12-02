@@ -2,24 +2,22 @@
 
 
 
-module mod5 (input logic [3:0] in, output logic [2:0] out);
+function logic [2:0] mod5 (input logic [3:0] in);
 
-    always_comb begin
-        unique case (in)
-            'd0: out = 'd0;
-            'd1: out = 'd1;
-            'd2: out = 'd2;
-            'd3: out = 'd3;
-            'd4: out = 'd4;
-            'd5: out = 'd0;
-            'd6: out = 'd1;
-            'd7: out = 'd2;
-            'd8: out = 'd3;
-            'd9: out = 'd4;
-        endcase
-    end
+    unique case (in)
+        'd0: mod5 = 'd0;
+        'd1: mod5 = 'd1;
+        'd2: mod5 = 'd2;
+        'd3: mod5 = 'd3;
+        'd4: mod5 = 'd4;
+        'd5: mod5 = 'd0;
+        'd6: mod5 = 'd1;
+        'd7: mod5 = 'd2;
+        'd8: mod5 = 'd3;
+        'd9: mod5 = 'd4;
+    endcase
 
-endmodule: mod5
+endfunction: mod5
 
 module rotl64
     (input logic [63:0] in,
@@ -34,4 +32,5 @@ module rotl64
 
 
 endmodule: rotl64
+
 
