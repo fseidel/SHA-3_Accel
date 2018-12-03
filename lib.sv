@@ -19,18 +19,14 @@ function logic [2:0] mod5 (input logic [3:0] in);
 
 endfunction: mod5
 
-module rotl64
+function logic [63:0] rotl64
     (input logic [63:0] in,
-     input logic [5:0] shift,
-     output logic [63:0] out);
-
-    logic [63:0] temp;
-
-    always_comb begin
-       out = (in << shift) | (in >> (64 - shift));
-    end
+     input logic [5:0] shift);
 
 
-endmodule: rotl64
+    assign rotl64 = (in << shift) | (in >> (64 - shift));
+
+
+endfunction: rotl64
 
 
