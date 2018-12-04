@@ -4,12 +4,12 @@
 
 module keccak_round
     (input logic [4:0][4:0][63:0] state,
+     input logic [4:0] round,
      output logic [4:0][4:0][63:0] out);
 
     logic [4:0][63:0] theta1, theta2;
-    logic [4:0][4:0][63:0] theta_out;
+    logic [4:0][4:0][63:0] theta_out, rho_pi_out, chi_out;
 
-    logic [4:0][4:0][63:0] rho_pi_out;
 
 
     generate
@@ -36,10 +36,21 @@ module keccak_round
         // chi step
         for (x = 0; x < 5; x = x+1) begin
             for (y = 0; y < 5; y = y+1) begin
-                assign out[x][y] = rho_pi_out[x][y] ^ ((~rho_pi_out[mod5(x+1)][y]) & rho_pi_out[mod5(x+2)][y]);
+                assign chi_out[x][y] = rho_pi_out[x][y] ^ ((~rho_pi_out[mod5(x+1)][y]) & rho_pi_out[mod5(x+2)][y]);
             end
         end
 
+        //iota step
+        assign out[0][0] = chi_out[0][0] ^ roundc(round);
+
+        //assign rest of output
+        assign out[0][1] = chi_out[0][1];
+        assign out[1][0] = chi_out[1][0];
+        for (x = 1; x < 5; x = x + 1) begin
+            for (y = 1; y < 5; y = y + 1) begin
+                assign out[x][y] = chi_out[x][y];
+            end
+        end
 
     endgenerate
 
@@ -50,13 +61,14 @@ endmodule: keccak_round
 
 module test;
     logic [4:0][4:0][63:0] st, out;
+    logic [4:0] round;
     //logic [4:0][63:0] out;
 
     //keccak_f_simple kf(st, out);
-    keccak_round kr(st, out);
+    keccak_round kr(st, round, out);
     integer i, j;
     initial begin
-        $monitor($time,,"st[0]=%h, out[0]=%h, st[9]=%h, out[1]=%h", st[0][0], out[0][0], st[1][4],out[0][1]);
+        $monitor($time,,"st[0]=%h, out[0]=%h, st[9]=%h, out[5]=%h, out[1]=%h", st[0][0], out[0][0], st[1][4],out[0][1], out[1][0]);
         for (i = 0; i < 5; i=i+1) begin
             for (j = 0; j < 5; j=j+1) begin
                 st[i][j] = 0;
@@ -66,6 +78,7 @@ module test;
         st[1][0] = 'habcd;
         st[0][1] = 'hfeec;
         st[1][1] = 'h1ace;
+        round = 'd3;
         #5
         $finish;
     end
