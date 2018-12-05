@@ -166,3 +166,40 @@ function logic [63:0] roundc(input logic [4:0] round);
     endcase
 
 endfunction: roundc
+
+
+module register
+   #(parameter                   WIDTH = 0,
+     parameter logic [WIDTH-1:0] RESET_VAL = 'b0)
+    (input logic clk, en, rst_l, clear,
+     input logic [WIDTH-1:0] D,
+     output logic [WIDTH-1:0] Q);
+
+    always_ff @(posedge clk, negedge rst_l) begin
+        if (!rst_l)
+            Q <= RESET_VAL;
+        else if (clear)
+            Q <= RESET_VAL;
+        else if (en)
+            Q <= D;
+    end
+
+endmodule: register
+
+module state_register
+    (input logic clk, en, rst_l, clear,
+     input logic [4:0][4:0][63:0] state_in,
+     output logic [4:0][4:0][63:0] state_out);
+
+
+    generate
+    genvar x, y;
+        for (x = 0; x < 5; x = x + 1) begin
+            for (y = 0; y < 5; y = y + 1) begin
+                register #(64) r(.clk, .en, .rst_l, .clear, .D(state_in[x][y]),
+                                 .Q(state_out[x][y]));
+            end
+        end
+    endgenerate
+
+endmodule: state_register
