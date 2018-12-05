@@ -203,3 +203,19 @@ module state_register
     endgenerate
 
 endmodule: state_register
+
+module counter
+   #(parameter WIDTH=32)
+    (input logic clk, en, rst_l, clear,
+     output logic [WIDTH-1:0] out);
+
+    always_ff @(posedge clk, negedge rst_l) begin
+        if (!rst_l)
+            out <= 'b0;
+        else if (clear)
+            out <= 'b0;
+        else if (en)
+            out <= out + 1;
+    end
+
+endmodule: counter
