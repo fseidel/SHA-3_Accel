@@ -44,8 +44,12 @@ module keccak_round
         assign out[0][0] = chi_out[0][0] ^ roundc(round);
 
         //assign rest of output
-        assign out[0][1] = chi_out[0][1];
-        assign out[1][0] = chi_out[1][0];
+        for (x = 1; x < 5; x = x + 1) begin
+            assign out[x][0] = chi_out[x][0];
+        end
+        for (y = 1; y < 5; y = y + 1) begin
+            assign out[0][y] = chi_out[0][y];
+        end
         for (x = 1; x < 5; x = x + 1) begin
             for (y = 1; y < 5; y = y + 1) begin
                 assign out[x][y] = chi_out[x][y];
@@ -58,31 +62,18 @@ module keccak_round
 
 endmodule: keccak_round
 
+module keccak_f
+    (input logic clk, rdy,
+     input logic [4:0][4:0][63:0] state_in,
+     output logic [4:0][4:0][63:0] state_out);
 
-module test;
-    logic [4:0][4:0][63:0] st, out;
-    logic [4:0] round;
-    //logic [4:0][63:0] out;
+    logic [4:0][4:0][63:0] state_d, state_q;
+    assign state_d = (rdy) ? state_in : state_out;
 
-    //keccak_f_simple kf(st, out);
-    keccak_round kr(st, round, out);
-    integer i, j;
-    initial begin
-        $monitor($time,,"st[0]=%h, out[0]=%h, st[9]=%h, out[5]=%h, out[1]=%h", st[0][0], out[0][0], st[1][4],out[0][1], out[1][0]);
-        for (i = 0; i < 5; i=i+1) begin
-            for (j = 0; j < 5; j=j+1) begin
-                st[i][j] = 0;
-            end
-        end
-        st[0][0] = 'h1234;
-        st[1][0] = 'habcd;
-        st[0][1] = 'hfeec;
-        st[1][1] = 'h1ace;
-        round = 'd3;
-        #5
-        $finish;
-    end
+    state_register sr(.clk, .en(1'b1), .clear(1'b0), .rst_l(1'b1),
+                      .state_in(state_d), .state_out(state_q));
 
+    keccak_round kr (state_q, 'd3, state_out);
 
+endmodule: keccak_f
 
-endmodule: test
