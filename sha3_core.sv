@@ -65,15 +65,29 @@ endmodule: keccak_round
 module keccak_f
     (input logic clk, rdy,
      input logic [4:0][4:0][63:0] state_in,
+     output logic out_rdy,
      output logic [4:0][4:0][63:0] state_out);
 
     logic [4:0][4:0][63:0] state_d, state_q;
+    logic [4:0] round;
+
+    always_ff @(posedge clk) begin
+        if (rdy)
+            round <= 'd0;
+        else if (round == 'd23)
+            round <= 'd0;
+        else
+            round <= round + 1;
+    end
+    assign out_rdy = round == 'd23;
+
     assign state_d = (rdy) ? state_in : state_out;
 
     state_register sr(.clk, .en(1'b1), .clear(1'b0), .rst_l(1'b1),
                       .state_in(state_d), .state_out(state_q));
 
-    keccak_round kr (state_q, 'd3, state_out);
+    keccak_round kr (state_q, round, state_out);
+
 
 endmodule: keccak_f
 
