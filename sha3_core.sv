@@ -70,17 +70,17 @@ module keccak_f
 
     logic [4:0][4:0][63:0] state_d, state_q;
     logic [4:0] round;
+    logic reg_en;
 
     always_ff @(posedge clk) begin
         if (rdy)
             round <= 'd0;
         else if (round == 'd23)
-            round <= 'd0;
+            round <= 'd23;
         else
             round <= round + 1;
     end
     assign out_rdy = round == 'd23;
-
     assign state_d = (rdy) ? state_in : state_out;
 
     state_register sr(.clk, .en(1'b1), .clear(1'b0), .rst_l(1'b1),
@@ -90,4 +90,5 @@ module keccak_f
 
 
 endmodule: keccak_f
+
 
