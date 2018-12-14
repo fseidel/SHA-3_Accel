@@ -2,7 +2,7 @@
 
 
 
-function logic [2:0] mod5 (input logic [3:0] in);
+function automatic logic [2:0] mod5 (input logic [3:0] in);
 
     unique case (in)
         'd0: mod5 = 'd0;
@@ -19,18 +19,18 @@ function logic [2:0] mod5 (input logic [3:0] in);
 
 endfunction: mod5
 
-function logic [63:0] rotl64
+function automatic logic [63:0] rotl64
     (input logic [63:0] in,
      input logic [5:0] shift);
 
 
-    assign rotl64 = (in << shift) | (in >> (64 - shift));
+  rotl64 = (in << shift) | (in >> (64 - shift));
 
 
 endfunction: rotl64
 
 
-function logic [5:0] rc
+function automatic logic [5:0] rc
     (input logic [2:0] x, y);
 
     unique case (x)
@@ -83,7 +83,7 @@ function logic [5:0] rc
     endcase
 endfunction: rc
 
-function logic [2:0] rho_pi_x
+function automatic logic [2:0] rho_pi_x
     (input logic [2:0] x, y);
 
     unique case (x)
@@ -136,7 +136,7 @@ function logic [2:0] rho_pi_x
     endcase
 endfunction: rho_pi_x
 
-function logic [63:0] roundc(input logic [4:0] round);
+function automatic logic [63:0] roundc(input logic [4:0] round);
 
     unique case (round)
         'd0: roundc = 64'h0000000000000001;

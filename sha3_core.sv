@@ -28,9 +28,10 @@ module keccak_round
 
         // rho pi step
         for (x = 0; x < 5; x = x+1) begin
-            for (y = 0; y < 5; y = y+1) begin
-                assign rho_pi_out[y][rho_pi_x(x, y)] = rotl64(theta_out[x][y], rc(x,y));
-            end
+          for (y = 0; y < 5; y = y+1) begin
+            localparam rpx = rho_pi_x(x, y);
+            assign rho_pi_out[y][rpx] = rotl64(theta_out[x][y], rc(x,y));
+          end
         end
 
         // chi step
