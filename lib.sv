@@ -1,7 +1,9 @@
 `default_nettype none
 
 
-
+/*
+ * modulo 5 lookup table for values 0-9.
+ */
 function automatic logic [2:0] mod5 (input logic [3:0] in);
 
     unique case (in)
@@ -19,6 +21,9 @@ function automatic logic [2:0] mod5 (input logic [3:0] in);
 
 endfunction: mod5
 
+/*
+ * 64 bit rotate left function.
+ */
 function automatic logic [63:0] rotl64
     (input logic [63:0] in,
      input logic [5:0] shift);
@@ -29,7 +34,9 @@ function automatic logic [63:0] rotl64
 
 endfunction: rotl64
 
-
+/*
+ * Rotation constants lookup table.
+ */
 function automatic logic [5:0] rc
     (input logic [2:0] x, y);
 
@@ -83,6 +90,9 @@ function automatic logic [5:0] rc
     endcase
 endfunction: rc
 
+/*
+ * Rho Pi lookup table, given x and y, returns (2*x + 3*y) % 5.
+ */
 function automatic logic [2:0] rho_pi_x
     (input logic [2:0] x, y);
 
@@ -136,6 +146,9 @@ function automatic logic [2:0] rho_pi_x
     endcase
 endfunction: rho_pi_x
 
+/*
+ * Round constants lookup table.
+ */
 function automatic logic [63:0] roundc(input logic [4:0] round);
 
     unique case (round)
@@ -167,7 +180,9 @@ function automatic logic [63:0] roundc(input logic [4:0] round);
 
 endfunction: roundc
 
-
+/*
+ * Register module.
+ */
 module register
    #(parameter                   WIDTH = 0,
      parameter logic [WIDTH-1:0] RESET_VAL = 'b0)
@@ -186,6 +201,9 @@ module register
 
 endmodule: register
 
+/*
+ * 5x5x64 bit state register module.
+ */
 module state_register
     (input logic clk, en, rst_l, clear,
      input logic [4:0][4:0][63:0] state_in,
@@ -204,6 +222,9 @@ module state_register
 
 endmodule: state_register
 
+/*
+ * Counter module.
+ */
 module counter
    #(parameter WIDTH=32)
     (input logic clk, en, rst_l, clear,

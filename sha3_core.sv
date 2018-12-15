@@ -2,6 +2,9 @@
 
 
 
+/*
+ * Performs a round of the keccak permutation.
+ */
 module keccak_round
     (input logic [4:0][4:0][63:0] state,
      input logic [4:0] round,
@@ -63,6 +66,9 @@ module keccak_round
 
 endmodule: keccak_round
 
+/*
+ * Performs full 24 rounds of keccak permutation.
+ */
 module keccak_f
     (input logic clk, rdy,
      input logic [4:0][4:0][63:0] state_in,
